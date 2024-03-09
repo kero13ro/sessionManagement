@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { users, sessions } from '@/assets/mock'
+import { users, sessions, titles } from '@/assets/mock'
 import { computed, ref } from 'vue'
 import { dateMapping, siteMapping } from '@/common'
 
@@ -58,36 +58,48 @@ const renderList = computed(() => {
 const CreateModal = ref()
 const openModalData = ref<SessionType>()
 const openModal = (item: SessionType) => {
-  openModalData.value = item
-  console.log(item)
+  openModalData.value = { ...item, title: 'MySQL' }
   CreateModal.value.showModal()
 }
 
 const handleCreate = () => {
-  console.log(123)
+  console.log(openModalData.value)
+  if (!openModalData.value?.speaker_id) return
+  CreateModal.value.close()
 }
 </script>
 
 <template>
   <div class="overflow-x-auto">
     <dialog id="CreateModal" class="modal" ref="CreateModal">
-      <div class="modal-box">
+      <div class="modal-box" v-if="openModalData">
         <h3 class="mb-8 text-lg font-bold">Create Session</h3>
         <div class="mb-6 grid grid-cols-2 gap-1">
-          <div class="flex"><span class="w-20">Day</span> {{ openModalData?.date }}</div>
-          <div class="flex">
+          <div class="row"><span class="w-20">Day</span> {{ openModalData.date }}</div>
+          <div class="row">
+            <span class="w-20">Title</span>
+            <select class="select select-bordered select-sm" v-model="openModalData.title">
+              <option v-for="title in titles" :key="title">{{ title }}</option>
+            </select>
+          </div>
+
+          <div class="row">
             <span class="w-20">Range</span>
             {{ dateMapping(openModalData?.date) }}
           </div>
-          <div class="flex">
+          <div class="row items-center">
+            <span class="w-20">Speaker</span>
+            <select class="select select-bordered select-sm" v-model="openModalData.speaker_id">
+              <option v-for="user in users" :key="user.id" :value="user.id">{{ user.name }}</option>
+            </select>
+          </div>
+          <div class="row">
             <span class="w-20">Site</span>{{ siteMapping(openModalData?.site) }}
           </div>
-          <div class="flex"><span class="w-20">Speaker</span>{{ openModalData?.speaker_id }}</div>
-          <div class="flex"><span class="w-20">Attendee</span> {{ openModalData?.attendees }}</div>
         </div>
-        <div class="flex justify-end gap-3">
+        <div class="row justify-end">
           <button class="btn">Close</button>
-          <button class="btn" @click="handleCreate">Confirm</button>
+          <button class="btn btn-success" @click="handleCreate">Confirm</button>
         </div>
       </div>
       <form method="dialog" class="modal-backdrop">
@@ -103,6 +115,15 @@ const handleCreate = () => {
           <th colspan="2">Day 2</th>
           <th colspan="2">Day 3</th>
         </tr>
+        <!-- <tr class="subtitle border-b-slate-400">
+          <th></th>
+          <th>A</th>
+          <th>B</th>
+          <th>A</th>
+          <th>B</th>
+          <th>A</th>
+          <th>B</th>
+        </tr> -->
       </thead>
       <tbody>
         <tr>
@@ -130,4 +151,13 @@ const handleCreate = () => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.row {
+  @apply flex items-center  gap-3;
+}
+.subtitle {
+  > th {
+    padding: 6px;
+  }
+}
+</style>

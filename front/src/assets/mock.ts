@@ -69,3 +69,5 @@ export const users = [
   { id: 11, name: 'Jane' },
   { id: 12, name: 'John' }
 ]
+
+export const titles = ['MySQL', 'Postgres', 'Mongodb']

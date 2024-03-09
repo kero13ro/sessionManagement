@@ -13,7 +13,7 @@
   - （從 attendee list）新增 與會者、講者列表：id 和名稱
   - （從 session table）新增 會議
     - (初步設計：固定三日)
-    - 每日分為上、下午時段 am/pm，每時段可同時舉辦二會議
+    - 每日分為上、下午時段，每時段可同時舉辦二會議 A / B
     - 點擊空閒區間後，可新增會議：名稱、一位講者、多位與會者、上限人數
     - 每位使用者都有唯一數字編號
 - 與會者
@@ -27,10 +27,10 @@
   - id
   - date: integer 1/2/3（初步設計，可擴展為行事曆）
   - range: integer 1/2 (am/pm)
-  - site: integer 1/2 (A/B)
-  - title: enum MySQL/Postgres/Mongodb
+  - site: integer 1/2 (場地 A/場地 B)
+  - title: string (MySQL/Postgres/Mongodb)
   - speaker_id: integer
-  - max_attendees: integer
+  - (max_attendees: integer)
 - Attendees
   - id
   - identifier: unique number
