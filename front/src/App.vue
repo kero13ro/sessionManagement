@@ -1,13 +1,9 @@
 <template>
   <div>
-<main>123</main>
+    <h1 class="">123</h1>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts"></script>
 
-</script>
-
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>
