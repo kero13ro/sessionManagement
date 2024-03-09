@@ -26,8 +26,8 @@
 - Session
   - id
   - date: integer 1/2/3（初步設計，可擴展為行事曆）
-  - range: enum am/pm
-  - site: string
+  - range: integer 1/2 (am/pm)
+  - site: integer 1/2 (A/B)
   - title: enum MySQL/Postgres/Mongodb
   - speaker_id: integer
   - max_attendees: integer

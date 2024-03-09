@@ -10,8 +10,8 @@ const renderView = ref<'sessions' | 'attendee'>('sessions')
 <template>
   <div class="root">
     <div class="flex flex-col gap-6 p-6">
-      <div class="text-md bg btn btn-block">Sessions</div>
-      <div class="text-md btn btn-block">Attendee</div>
+      <div class="text-md bg btn btn-block" @click="renderView = 'sessions'">Sessions</div>
+      <div class="text-md btn btn-block" @click="renderView = 'attendee'">Attendee</div>
     </div>
     <div class="p-6">
       <ViewSessions v-show="renderView === 'sessions'" />
