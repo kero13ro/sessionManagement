@@ -26,7 +26,7 @@
 - Session
   - id
   - date: integer 1/2/3（初步設計，可擴展為行事曆）
-  - section: enum am/pm
+  - range: enum am/pm
   - site: string
   - title: enum MySQL/Postgres/Mongodb
   - speaker_id: integer
@@ -34,6 +34,7 @@
 - Attendees
   - id
   - identifier: unique number
+    - 但是 範例是 A0001
   - name
   - speaker_id
 - Speakers

@@ -1,11 +1,30 @@
+<script setup lang="ts">
+import ViewSessions from './components/view/ViewSessions.vue'
+import ViewAttendee from './components/view/ViewAttendee.vue'
+
+import { ref } from 'vue'
+
+const renderView = ref<'sessions' | 'attendee'>('sessions')
+</script>
+
 <template>
-  <div>
-    <button class="btn btn-primary">One</button>
-    <button class="btn btn-secondary">Two</button>
-    <button class="btn btn-accent btn-outline">Three</button>
+  <div class="root">
+    <div class="flex flex-col gap-6 p-6">
+      <div class="text-md bg btn btn-block">Sessions</div>
+      <div class="text-md btn btn-block">Attendee</div>
+    </div>
+    <div class="p-6">
+      <ViewSessions v-show="renderView === 'sessions'" />
+      <ViewAttendee v-show="renderView === 'attendee'" />
+    </div>
   </div>
 </template>
 
-<script setup lang="ts"></script>
-
-<style lang="scss" scoped></style>
+<style scoped>
+.root {
+  display: grid;
+  /* grid-template-columns: 300px 1fr; */
+  grid-template-columns: auto 1fr;
+  height: 100vh;
+}
+</style>
