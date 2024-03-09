@@ -1,12 +1,7 @@
 <script setup lang="ts">
-import { users, sessions, titles } from '@/assets/mock'
 import { computed, ref } from 'vue'
+import { users, sessions, titles } from '@/assets/mock'
 import { dateMapping, siteMapping } from '@/common'
-
-// const list = sessions.map((el) => ({
-//   ...el
-//   // attendees: el.attendees.map((id) => users.find((user) => user.id === id))
-// }))
 
 type SessionType = {
   id: number
@@ -17,42 +12,29 @@ type SessionType = {
   speaker_id: number
   attendees: number[]
 }
-// 天數、場地數量
-// 天數可增減、場地可增減，可擴展性
-const capacity = [3, 2]
+// 天數、場地 數量
+const dateMax = 3
+const siteMax = 2
+const defaultItem = {
+  id: 0,
+  title: '',
+  speaker_id: 0,
+  attendees: [0]
+}
 
 const renderList = computed(() => {
-  const AMList: SessionType[] = []
-  const PMList: SessionType[] = []
+  const res: Record<number, SessionType[]> = { 1: [], 2: [] }
 
-  const defaultItem = {
-    id: 0,
-    title: '',
-    speaker_id: 0,
-    attendees: [0]
-  }
-
-  for (let date = 1; date <= capacity[0]; date++) {
-    for (let site = 1; site <= capacity[1]; site++) {
-      AMList.push(
-        sessions.find((el) => el.date === date && el.range === 1 && el.site === site) || {
-          ...defaultItem,
-          date,
-          range: 1,
-          site
-        }
-      )
-      PMList.push(
-        sessions.find((el) => el.date === date && el.range === 2 && el.site === site) || {
-          ...defaultItem,
-          date,
-          range: 2,
-          site
-        }
-      )
+  for (let date = 1; date <= dateMax; date++) {
+    for (let range = 1; range <= 2; range++) {
+      for (let site = 1; site <= siteMax; site++) {
+        const ta = sessions.find((el) => el.date === date && el.range === range && el.site === site)
+        res[range].push(ta || { ...defaultItem, date, range, site })
+      }
     }
   }
-  return [AMList, PMList]
+
+  return res
 })
 
 const CreateModal = ref()
@@ -67,6 +49,9 @@ const handleCreate = () => {
   if (!openModalData.value?.speaker_id) return
   CreateModal.value.close()
 }
+
+import { useSetting } from '@/stores/setting'
+const _s = useSetting()
 </script>
 
 <template>
@@ -111,38 +96,26 @@ const handleCreate = () => {
       <thead>
         <tr>
           <th></th>
-          <th colspan="2">Day 1</th>
-          <th colspan="2">Day 2</th>
-          <th colspan="2">Day 3</th>
+          <th :colspan="siteMax" v-for="date in dateMax" :key="date">Day {{ date }}</th>
         </tr>
-        <!-- <tr class="subtitle border-b-slate-400">
-          <th></th>
-          <th>A</th>
-          <th>B</th>
-          <th>A</th>
-          <th>B</th>
-          <th>A</th>
-          <th>B</th>
-        </tr> -->
       </thead>
       <tbody>
-        <tr>
-          <th class="bg-slate-100 text-xs">Morning</th>
-          <td v-for="item in renderList[0]" :key="item?.id">
-            {{ item.title }}
-            <div v-show="item.id === 0">
-              <button class="btn btn-outline btn-info btn-xs" @click="openModal(item)">
+        <tr v-for="(rangeList, index) in renderList" :key="index">
+          <th class="bg-slate-100 text-xs">{{ dateMapping(index) }}</th>
+          <td v-for="item in rangeList" :key="item?.id">
+            <div v-if="item.id !== 0" class="grid gap-1">
+              <div>{{ item.title }}</div>
+              <button v-if="!_s.isCreatedMode" class="btn btn-outline btn-info btn-xs">JOIN</button>
+            </div>
+            <div v-else>
+              <button
+                v-if="_s.isCreatedMode"
+                class="btn btn-outline btn-info btn-xs"
+                @click="openModal(item)"
+              >
                 Create
               </button>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <th class="bg-slate-100 text-xs">Afternoon</th>
-          <td v-for="item in renderList[1]" :key="item?.id">
-            {{ item?.title }}
-            <div v-show="!item?.title">
-              <button class="btn btn-outline btn-info btn-xs">Create</button>
+              <div v-else>N/A</div>
             </div>
           </td>
         </tr>
@@ -154,10 +127,5 @@ const handleCreate = () => {
 <style scoped>
 .row {
   @apply flex items-center  gap-3;
-}
-.subtitle {
-  > th {
-    padding: 6px;
-  }
 }
 </style>

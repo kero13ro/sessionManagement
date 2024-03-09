@@ -1,5 +1,12 @@
 <script setup lang="ts">
 import { users } from '@/assets/mock'
+import { useSetting } from '@/stores/setting'
+const _s = useSetting()
+
+const handleJoin = () => {
+  _s.renderView = 'sessions'
+  _s.mode = 'join'
+}
 </script>
 <template>
   <div class="max-w-[300px] overflow-x-auto">
@@ -11,7 +18,7 @@ import { users } from '@/assets/mock'
         </tr>
       </thead>
       <tbody>
-        <tr v-for="user in users" :key="user.id">
+        <tr v-for="user in users" :key="user.id" @click="handleJoin">
           <th>{{ user.id }}</th>
           <td>{{ user.name }}</td>
         </tr>
