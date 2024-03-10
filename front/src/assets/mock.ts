@@ -55,7 +55,7 @@ export const sessions = [
   }
 ]
 
-export const users = [
+export const members = [
   { id: 1, name: 'Jane Doe' },
   { id: 2, name: 'Eric' },
   { id: 3, name: 'Olivia' },
