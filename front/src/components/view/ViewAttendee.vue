@@ -30,7 +30,12 @@ const addMember = () => {
           <td>{{ user.name }}</td>
           <td>
             <div v-if="user.joined" class="flex gap-2">
-              <div class="badge badge-ghost text-xs" v-for="el in user.joined" :key="el.id">
+              <div
+                class="badge badge-ghost text-xs"
+                v-for="el in user.joined"
+                :key="el.id"
+                @click.stop="_useSessions.removeAttendee(el.id)"
+              >
                 {{ el.identifier }}
               </div>
             </div>
