@@ -6,16 +6,18 @@ import { useSessions } from '@/stores/useSessions'
 import { storeToRefs } from 'pinia'
 import type { SessionType } from '@/stores/typing'
 const _s = useSessions()
-const { sessions, speakers, curtUser, isCreatedMode, loading } = storeToRefs(_s)
+const { sessions, speakers, curtUser, isCreatedMode, loading, attendeesArr } = storeToRefs(_s)
 
 // 天數、場地 數量，依據業務邏輯調整
 const DAY_MAX = ref(3)
 const SITE_MAX = ref(2)
 
+const max_attendees = ref(3)
 const defaultItem = {
   id: '0',
   title: '',
   speaker_id: '0',
+  max_attendees: 3,
   attendees: []
 }
 const renderList = computed(() => {
@@ -46,9 +48,10 @@ const openModal = (item: SessionType) => {
 const handleCreate = () => {
   if (!openModalData.value?.speaker_id) return
   const { day, slot, site, speaker_id, title } = openModalData.value
-  const params = { day, slot, site, speaker_id, title }
+  const params = { day, slot, site, speaker_id, title, max_attendees: max_attendees.value }
   _s.addSession(params)
   CreateModal.value.close()
+  max_attendees.value = 3
 }
 
 const curtUserJoinedSession = computed(() => {
@@ -64,6 +67,10 @@ const sameSlotSession = computed(() => {
     (el) => el.slot === openModalData.value!.slot && el.day === openModalData.value!.day
   )
 })
+
+const joinedNumber = (id: string) => {
+  return attendeesArr.value.filter((el) => el.session_id === id).length
+}
 </script>
 
 <template>
@@ -98,7 +105,9 @@ const sameSlotSession = computed(() => {
                 class="btn btn-outline btn-info btn-xs"
                 @click="_s.addAttendee(item)"
                 :disabled="
-                  curtUserJoinedSession.some((el) => el.day === item.day && el.slot === item.slot)
+                  curtUserJoinedSession.some(
+                    (el) => el.day === item.day && el.slot === item.slot
+                  ) || joinedNumber(item.id) >= item.max_attendees
                 "
               >
                 JOIN
@@ -135,8 +144,19 @@ const sameSlotSession = computed(() => {
             <span class="w-20">slot</span>
             {{ slotMapping(openModalData?.day) }}
           </div>
+          <div class="row">
+            <span class="w-20">Max </span
+            ><input
+              class="input input-sm input-bordered w-24"
+              type="number"
+              v-model="max_attendees"
+            />
+          </div>
+          <div class="row">
+            <span class="w-20">Site</span>{{ siteMapping(openModalData?.site) }}
+          </div>
           <div class="row items-center">
-            <span class="w-20">Speaker</span>
+            <span class="w-20 text-red-500">Speaker</span>
             <select
               class="select select-bordered select-sm w-24"
               v-model="openModalData.speaker_id"
@@ -150,9 +170,6 @@ const sameSlotSession = computed(() => {
                 {{ user.name }}
               </option>
             </select>
-          </div>
-          <div class="row">
-            <span class="w-20">Site</span>{{ siteMapping(openModalData?.site) }}
           </div>
         </div>
         <div class="row justify-end">

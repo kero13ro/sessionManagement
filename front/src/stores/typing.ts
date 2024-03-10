@@ -4,6 +4,7 @@ export type SessionType = {
   slot: number
   site: number
   title: string
+  max_attendees: number
   speaker_id: string
   attendees: string[]
 }

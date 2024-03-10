@@ -20,7 +20,7 @@ export const useSessions = defineStore('sessions', () => {
   const fetchSessions = async () => {
     sessions.value = await pb
       .collection('sessions')
-      .getFullList({ fields: 'id,day,slot,site,title,speaker_id' })
+      .getFullList({ fields: 'id,day,slot,site,title,speaker_id,max_attendees' })
     loading.value = false
   }
 
@@ -142,6 +142,7 @@ export const useSessions = defineStore('sessions', () => {
     sessions,
     members,
     speakers,
-    curtUser
+    curtUser,
+    attendeesArr
   }
 })
