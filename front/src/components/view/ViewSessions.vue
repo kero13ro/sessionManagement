@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { titles } from '@/assets/mock'
-import { rangeMapping, siteMapping } from '@/common'
+import { slotMapping, siteMapping } from '@/common'
 import { useSessions } from '@/stores/useSessions'
 import { storeToRefs } from 'pinia'
 import type { SessionType } from '@/stores/typing'
@@ -29,12 +29,12 @@ const renderList = computed(() => {
   const speaker_id = speakers.value[0] ? speakers.value[0].id : '0'
 
   for (let day = 1; day <= DAY_MAX; day++) {
-    for (let range = 1; range <= 2; range++) {
+    for (let slot = 1; slot <= 2; slot++) {
       for (let site = 1; site <= SITE_MAX; site++) {
         const ta = sessions.value.find(
-          (el) => el.day === day && el.range === range && el.site === site
+          (el) => el.day === day && el.slot === slot && el.site === site
         )
-        res[range].push(ta || { ...defaultItem, day, range, site, speaker_id })
+        res[slot].push(ta || { ...defaultItem, day, slot, site, speaker_id })
       }
     }
   }
@@ -51,8 +51,8 @@ const openModal = (item: SessionType) => {
 
 const handleCreate = () => {
   if (!openModalData.value?.speaker_id) return
-  const { day, range, site, speaker_id, title } = openModalData.value
-  const params = { day, range, site, speaker_id, title }
+  const { day, slot, site, speaker_id, title } = openModalData.value
+  const params = { day, slot, site, speaker_id, title }
   _useSessions.addSession(params)
   CreateModal.value.close()
 }
@@ -73,8 +73,8 @@ const handleCreate = () => {
           </div>
 
           <div class="row">
-            <span class="w-20">Range</span>
-            {{ rangeMapping(openModalData?.day) }}
+            <span class="w-20">slot</span>
+            {{ slotMapping(openModalData?.day) }}
           </div>
           <div class="row items-center">
             <span class="w-20">Speaker</span>
@@ -109,9 +109,9 @@ const handleCreate = () => {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(rangeList, index) in renderList" :key="index">
-          <th class="w-[90px] bg-slate-100 text-xs">{{ rangeMapping(index) }}</th>
-          <td v-for="item in rangeList" :key="item?.id" class="w-[90px]">
+        <tr v-for="(slotList, index) in renderList" :key="index">
+          <th class="w-[90px] bg-slate-100 text-xs">{{ slotMapping(index) }}</th>
+          <td v-for="item in slotList" :key="item?.id" class="w-[90px]">
             <div v-if="item.id !== '0'" class="grid gap-1">
               <div>{{ item.title }}</div>
               <button

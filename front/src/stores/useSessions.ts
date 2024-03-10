@@ -74,13 +74,13 @@ export const useSessions = defineStore('sessions', () => {
 
   const addAttendee = async (sessions: SessionType) => {
     loading.value = true
-    const { day, range, site, id: session_id } = sessions
+    const { day, slot, site, id: session_id } = sessions
     const arr = attendeesArr.value
       .filter((el) => el.session_id === session_id)
       .map((el) => Number(String(el.identifier).slice(5)))
     const NewId = arr.length > 0 ? Math.max(...arr) + 1 : 1
 
-    const identifier = Number(day + pad(range) + pad(site) + pad(NewId, 5))
+    const identifier = Number(day + pad(slot) + pad(site) + pad(NewId, 5))
     const params = {
       members_id: curtUser.value!.id,
       session_id,

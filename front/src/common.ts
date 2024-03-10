@@ -1,4 +1,4 @@
-export const rangeMapping = (num: number | undefined) => {
+export const slotMapping = (num: number | undefined) => {
   if (!num) return ''
   switch (num) {
     case 1:

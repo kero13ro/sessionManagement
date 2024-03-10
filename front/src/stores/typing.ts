@@ -1,7 +1,7 @@
 export type SessionType = {
   id: string
   day: number
-  range: number
+  slot: number
   site: number
   title: string
   speaker_id: string

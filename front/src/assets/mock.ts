@@ -2,7 +2,7 @@ export const sessions = [
   {
     id: 1,
     day: 1,
-    range: 1,
+    slot: 1,
     site: 1,
     title: 'Mongodb',
     speaker_id: 12,
@@ -11,7 +11,7 @@ export const sessions = [
   {
     id: 3,
     day: 2,
-    range: 1,
+    slot: 1,
     site: 1,
     title: 'Mongodb',
     speaker_id: 6,
@@ -20,7 +20,7 @@ export const sessions = [
   {
     id: 4,
     day: 2,
-    range: 1,
+    slot: 1,
     site: 2,
     title: 'Mongodb',
     speaker_id: 7,
@@ -29,7 +29,7 @@ export const sessions = [
   {
     id: 5,
     day: 3,
-    range: 1,
+    slot: 1,
     site: 1,
     title: 'Mongodb',
     speaker_id: 8,
@@ -38,7 +38,7 @@ export const sessions = [
   {
     id: 6,
     day: 1,
-    range: 2,
+    slot: 2,
     site: 2,
     title: 'Mongodb',
     speaker_id: 9,
@@ -47,7 +47,7 @@ export const sessions = [
   {
     id: 9,
     day: 3,
-    range: 2,
+    slot: 2,
     site: 1,
     title: 'Mongodb',
     speaker_id: 12,

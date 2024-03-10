@@ -30,7 +30,7 @@
 - sessions
   - id
   - day: integer 1/2/3（初步設計，可擴展為行事曆）
-  - range: integer 1/2 (am/pm)
+  - slot: integer 1/2 (am/pm)
   - site: integer 1/2 (場地 A/場地 B)
   - title: string (MySQL/Postgres/Mongodb)
   - speaker_id: integer
