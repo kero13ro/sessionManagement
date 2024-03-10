@@ -69,8 +69,8 @@ const sameSlotSession = computed(() => {
 <template>
   <div class="px-6 py-12">
     <div class="fixed bottom-3 right-3 p-3">
-      <input class="input input-sm input-bordered w-20" type="number" v-model="DAY_MAX" />
-      <input class="input input-sm input-bordered w-20" type="number" v-model="SITE_MAX" />
+      Day:<input class="input input-sm input-bordered w-20" type="number" v-model="DAY_MAX" />
+      Site:<input class="input input-sm input-bordered w-20" type="number" v-model="SITE_MAX" />
     </div>
     <table class="table w-[auto] bg-white text-center" v-if="!loading">
       <thead class="bg-slate-100">
