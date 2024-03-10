@@ -5,10 +5,10 @@ import { ref } from 'vue'
 const _s = useSetting()
 const _useSessions = useSessions()
 
-const handleJoin = () => {
-  _s.renderView = 'sessions'
-  _s.mode = 'join'
-}
+// const handleJoin = () => {
+//   _s.renderView = 'sessions'
+//   _s.mode = 'join'
+// }
 
 const newName = ref('')
 const addMember = () => {
@@ -22,14 +22,24 @@ const addMember = () => {
     <table class="table table-zebra max-w-[300px] text-center">
       <thead>
         <tr>
-          <th>Id</th>
+          <!-- <th>Id</th> -->
           <th>Name</th>
+          <th>Joined</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="user in _useSessions.members" :key="user.id" @click="handleJoin">
-          <th>{{ user.id }}</th>
+        <tr
+          v-for="user in _useSessions.members"
+          :key="user.id"
+          @click="_useSessions.handleJoin(user)"
+        >
+          <!-- <th>{{ user.id }}</th> -->
           <td>{{ user.name }}</td>
+          <td>
+            <div v-if="user.joined" class="flex gap-2">
+              <span v-for="el in user.joined" :key="el.id">{{ el.identifier }}</span>
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>

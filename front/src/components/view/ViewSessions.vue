@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { titles } from '@/assets/mock'
 import { rangeMapping, siteMapping } from '@/common'
 import { useSetting } from '@/stores/useSetting'
@@ -7,7 +7,8 @@ import { useSessions, type SessionType } from '@/stores/useSessions'
 import { storeToRefs } from 'pinia'
 const _s = useSetting()
 const _useSessions = useSessions()
-const { sessions, speakers } = storeToRefs(_useSessions)
+const addAttendee = _useSessions.addAttendee
+const { sessions, speakers, joinedArr } = storeToRefs(_useSessions)
 
 // 天數、場地 數量，依據業務邏輯調整
 const DAY_MAX = 3
@@ -94,7 +95,7 @@ const handleCreate = () => {
       </form>
     </dialog>
 
-    <table class="table text-center">
+    <table class="table w-[auto] text-center">
       <thead>
         <tr>
           <th></th>
@@ -112,11 +113,18 @@ const handleCreate = () => {
       </thead>
       <tbody>
         <tr v-for="(rangeList, index) in renderList" :key="index">
-          <th class="bg-slate-100 text-xs">{{ rangeMapping(index) }}</th>
-          <td v-for="item in rangeList" :key="item?.id">
+          <th class="w-[100px] bg-slate-100 text-xs">{{ rangeMapping(index) }}</th>
+          <td v-for="item in rangeList" :key="item?.id" >
             <div v-if="item.id !== '0'" class="grid gap-1">
               <div>{{ item.title }}</div>
-              <button v-if="!_s.isCreatedMode" class="btn btn-outline btn-info btn-xs">JOIN</button>
+              <button
+                v-if="!_s.isCreatedMode"
+                class="btn btn-outline btn-info btn-xs"
+                @click="addAttendee(item)"
+                :disabled="joinedArr.includes(item.id)"
+              >
+                JOIN
+              </button>
             </div>
             <div v-else>
               <button
@@ -126,7 +134,7 @@ const handleCreate = () => {
               >
                 Create
               </button>
-              <div v-else>N/A</div>
+              <div v-else class="text-slate-600 opacity-50">N/A</div>
             </div>
           </td>
         </tr>
@@ -140,4 +148,3 @@ const handleCreate = () => {
   @apply flex items-center  gap-3;
 }
 </style>
-@/stores/useSetting
