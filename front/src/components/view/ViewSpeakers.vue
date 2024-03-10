@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useSessions } from '@/stores/useSessions'
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 const _s = useSessions()
 
 const addSpeakerModal = ref()
@@ -16,6 +16,10 @@ const handleAdd = (id: string) => {
 const notSpeaker = computed(() => {
   const ids = _s.speakers.map((sp) => sp.members_id)
   return _s.members.filter((el) => !ids.includes(el.id))
+})
+
+onMounted(() => {
+  _s.fetchSpeakers()
 })
 </script>
 <template>

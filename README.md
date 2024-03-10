@@ -48,6 +48,6 @@
 
 ### TODO
 
-- 依序業務需求，考量擴展性、設計 DB schema
-- 使用 pocketbase 完成必要項目，包含 UI 邏輯、資料處理
-- 改使用原生 golang API
+- [x] 依序業務需求，考量擴展性、設計 DB schema
+- [x] 使用 pocketbase 完成必要項目，包含 UI 邏輯、資料處理
+- [] 改使用原生 golang API

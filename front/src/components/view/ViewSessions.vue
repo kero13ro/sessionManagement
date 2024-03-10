@@ -84,7 +84,15 @@ const sameSlotSession = computed(() => {
           <th class="w-[90px] bg-slate-100 text-xs">{{ slotMapping(slot) }}</th>
           <td v-for="item in slotList" :key="item?.id" class="w-[90px]">
             <div v-if="item.id !== '0'" class="grid gap-1">
-              <div class="text-xs">{{ item.title }}</div>
+              <div class="relative text-xs">
+                {{ item.title }}
+                <div
+                  class="absolute -right-2 -top-1 cursor-pointer p-1 text-red-500 opacity-0 hover:opacity-100"
+                  @click="_s.removeSession(item.id)"
+                >
+                  x
+                </div>
+              </div>
               <button
                 v-if="!isCreatedMode"
                 class="btn btn-outline btn-info btn-xs"

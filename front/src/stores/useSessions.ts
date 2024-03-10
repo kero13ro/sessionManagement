@@ -31,6 +31,13 @@ export const useSessions = defineStore('sessions', () => {
     loading.value = false
   }
 
+  const removeSession = async (id: string) => {
+    loading.value = true
+    await pb.collection('sessions').delete(id)
+    sessions.value = sessions.value.filter((el) => el.id !== id)
+    loading.value = false
+  }
+
   const fetchMembers = async () => {
     const res = await pb.collection('members').getFullList({ expand: 'attendees_via_members_id' })
     members.value = res.map(({ id, name, expand = {} }) => ({
@@ -123,6 +130,7 @@ export const useSessions = defineStore('sessions', () => {
     addMember,
     addSpeaker,
     addSession,
+    removeSession,
     fetchSpeakers,
     handleJoin,
     addAttendee,

@@ -22,7 +22,7 @@ const gotoSession = () => {
     <div class="overflow-x-auto">
       <ViewSessions v-show="_s.renderView === 'sessions'" />
       <ViewAttendee v-show="_s.renderView === 'attendee'" />
-      <ViewSpeakers v-show="_s.renderView === 'speaker'" />
+      <ViewSpeakers v-if="_s.renderView === 'speaker'" />
     </div>
     <div class="mask" v-show="_s.loading">
       <IconLoading />
