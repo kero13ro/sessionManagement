@@ -5,14 +5,8 @@ import { slotMapping, siteMapping } from '@/common'
 import { useSessions } from '@/stores/useSessions'
 import { storeToRefs } from 'pinia'
 import type { SessionType } from '@/stores/typing'
-const _useSessions = useSessions()
-const addAttendee = _useSessions.addAttendee
-const { sessions, speakers, curtUser, isCreatedMode, loading } = storeToRefs(_useSessions)
-const curtUserJoinedArr = computed(() => {
-  if (!curtUser.value) return []
-  if (!curtUser.value.joined) return []
-  return curtUser.value.joined.map((el) => el.session_id)
-})
+const _s = useSessions()
+const { sessions, speakers, curtUser, isCreatedMode } = storeToRefs(_s)
 
 // 天數、場地 數量，依據業務邏輯調整
 const DAY_MAX = 3
@@ -53,13 +47,56 @@ const handleCreate = () => {
   if (!openModalData.value?.speaker_id) return
   const { day, slot, site, speaker_id, title } = openModalData.value
   const params = { day, slot, site, speaker_id, title }
-  _useSessions.addSession(params)
+  _s.addSession(params)
   CreateModal.value.close()
 }
+
+const curtUserJoinedArr = computed(() => {
+  if (!curtUser.value) return []
+  if (!curtUser.value.joined) return []
+  return curtUser.value.joined.map((el) => el.session_id)
+})
 </script>
 
 <template>
   <div class="overflow-x-auto">
+    <table class="table w-[auto] bg-white text-center">
+      <thead class="bg-slate-100">
+        <tr>
+          <th></th>
+          <th :colspan="SITE_MAX" v-for="day in DAY_MAX" :key="day">Day {{ day }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(slotList, index) in renderList" :key="index">
+          <th class="w-[90px] bg-slate-100 text-xs">{{ slotMapping(index) }}</th>
+          <td v-for="item in slotList" :key="item?.id" class="w-[90px]">
+            <div v-if="item.id !== '0'" class="grid gap-1">
+              <div>{{ item.title }}</div>
+              <button
+                v-if="!isCreatedMode"
+                class="btn btn-outline btn-info btn-xs"
+                @click="_s.addAttendee(item)"
+                :disabled="curtUserJoinedArr.includes(item.id)"
+              >
+                JOIN
+              </button>
+            </div>
+            <div v-else>
+              <button
+                v-if="isCreatedMode"
+                class="btn btn-outline btn-info btn-xs"
+                @click="openModal(item)"
+              >
+                Create
+              </button>
+              <div v-else class="text-slate-600 opacity-50">N/A</div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
     <dialog id="CreateModal" class="modal" ref="CreateModal">
       <div class="modal-box" v-if="openModalData">
         <h3 class="mb-8 text-lg font-bold">Create Session</h3>
@@ -100,43 +137,6 @@ const handleCreate = () => {
         <button>close</button>
       </form>
     </dialog>
-
-    <table class="table w-[auto] bg-white text-center">
-      <thead class="bg-slate-100">
-        <tr>
-          <th></th>
-          <th :colspan="SITE_MAX" v-for="day in DAY_MAX" :key="day">Day {{ day }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(slotList, index) in renderList" :key="index">
-          <th class="w-[90px] bg-slate-100 text-xs">{{ slotMapping(index) }}</th>
-          <td v-for="item in slotList" :key="item?.id" class="w-[90px]">
-            <div v-if="item.id !== '0'" class="grid gap-1">
-              <div>{{ item.title }}</div>
-              <button
-                v-if="!isCreatedMode"
-                class="btn btn-outline btn-info btn-xs"
-                @click="addAttendee(item)"
-                :disabled="curtUserJoinedArr.includes(item.id)"
-              >
-                JOIN
-              </button>
-            </div>
-            <div v-else>
-              <button
-                v-if="isCreatedMode"
-                class="btn btn-outline btn-info btn-xs"
-                @click="openModal(item)"
-              >
-                Create
-              </button>
-              <div v-else class="text-slate-600 opacity-50">N/A</div>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
   </div>
 </template>
 
