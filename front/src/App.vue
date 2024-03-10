@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ViewSessions from '@/components/view/ViewSessions.vue'
 import ViewAttendee from '@/components/view/ViewAttendee.vue'
-import { useSetting } from '@/stores/setting'
+import { useSetting } from '@/stores/useSetting'
 const _s = useSetting()
 </script>
 

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { users, sessions, titles } from '@/assets/mock'
-import { dateMapping, siteMapping } from '@/common'
+import { rangeMapping, siteMapping } from '@/common'
 
 type SessionType = {
   id: number
-  date: number
+  day: number
   range: number
   site: number
   title: string
@@ -13,7 +13,7 @@ type SessionType = {
   attendees: number[]
 }
 // 天數、場地 數量
-const dateMax = 3
+const dayMax = 3
 const siteMax = 2
 const defaultItem = {
   id: 0,
@@ -25,11 +25,11 @@ const defaultItem = {
 const renderList = computed(() => {
   const res: Record<number, SessionType[]> = { 1: [], 2: [] }
 
-  for (let date = 1; date <= dateMax; date++) {
+  for (let day = 1; day <= dayMax; day++) {
     for (let range = 1; range <= 2; range++) {
       for (let site = 1; site <= siteMax; site++) {
-        const ta = sessions.find((el) => el.date === date && el.range === range && el.site === site)
-        res[range].push(ta || { ...defaultItem, date, range, site })
+        const ta = sessions.find((el) => el.day === day && el.range === range && el.site === site)
+        res[range].push(ta || { ...defaultItem, day, range, site })
       }
     }
   }
@@ -50,7 +50,7 @@ const handleCreate = () => {
   CreateModal.value.close()
 }
 
-import { useSetting } from '@/stores/setting'
+import { useSetting } from '@/stores/useSetting'
 const _s = useSetting()
 </script>
 
@@ -60,7 +60,7 @@ const _s = useSetting()
       <div class="modal-box" v-if="openModalData">
         <h3 class="mb-8 text-lg font-bold">Create Session</h3>
         <div class="mb-6 grid grid-cols-2 gap-1">
-          <div class="row"><span class="w-20">Day</span> {{ openModalData.date }}</div>
+          <div class="row"><span class="w-20">Day</span> {{ openModalData.day }}</div>
           <div class="row">
             <span class="w-20">Title</span>
             <select class="select select-bordered select-sm" v-model="openModalData.title">
@@ -70,7 +70,7 @@ const _s = useSetting()
 
           <div class="row">
             <span class="w-20">Range</span>
-            {{ dateMapping(openModalData?.date) }}
+            {{ rangeMapping(openModalData?.day) }}
           </div>
           <div class="row items-center">
             <span class="w-20">Speaker</span>
@@ -96,12 +96,12 @@ const _s = useSetting()
       <thead>
         <tr>
           <th></th>
-          <th :colspan="siteMax" v-for="date in dateMax" :key="date">Day {{ date }}</th>
+          <th :colspan="siteMax" v-for="day in dayMax" :key="day">Day {{ day }}</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(rangeList, index) in renderList" :key="index">
-          <th class="bg-slate-100 text-xs">{{ dateMapping(index) }}</th>
+          <th class="bg-slate-100 text-xs">{{ rangeMapping(index) }}</th>
           <td v-for="item in rangeList" :key="item?.id">
             <div v-if="item.id !== 0" class="grid gap-1">
               <div>{{ item.title }}</div>
@@ -129,3 +129,4 @@ const _s = useSetting()
   @apply flex items-center  gap-3;
 }
 </style>
+@/stores/useSetting

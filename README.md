@@ -19,13 +19,14 @@
 - 與會者
   - （從 attendee list）加入會議
     - 講者、與會者 每個時段只能參與一場會議
+    - 參加者被指定一個唯一的編號 A0001
     - 達到上限禁止加入 disable the “+ join” button
 
 ### DB 架構
 
-- Session
+- sessions
   - id
-  - date: integer 1/2/3（初步設計，可擴展為行事曆）
+  - day: integer 1/2/3（初步設計，可擴展為行事曆）
   - range: integer 1/2 (am/pm)
   - site: integer 1/2 (場地 A/場地 B)
   - title: string (MySQL/Postgres/Mongodb)
@@ -34,12 +35,12 @@
 - Attendees
   - id
   - identifier: unique number
-    - 但是 範例是 A0001
+    - Q. 但是 範例是 A0001?
   - name
-  - speaker_id
 - Speakers
   - id
   - desc: string
+  - attendee_id
 - AttendeeSessionMapping
   - id
   - attendee_id

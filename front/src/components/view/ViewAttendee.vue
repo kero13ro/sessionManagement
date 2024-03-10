@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { users } from '@/assets/mock'
-import { useSetting } from '@/stores/setting'
+import { useSetting } from '@/stores/useSetting'
 const _s = useSetting()
 
 const handleJoin = () => {
@@ -28,3 +28,4 @@ const handleJoin = () => {
 </template>
 
 <style scoped></style>
+@/stores/useSetting

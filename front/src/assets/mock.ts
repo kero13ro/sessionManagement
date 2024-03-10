@@ -1,7 +1,7 @@
 export const sessions = [
   {
     id: 1,
-    date: 1,
+    day: 1,
     range: 1,
     site: 1,
     title: 'Mongodb',
@@ -10,46 +10,46 @@ export const sessions = [
   },
   {
     id: 3,
-    date: 2,
+    day: 2,
     range: 1,
     site: 1,
-    title: 'Mongodb2',
+    title: 'Mongodb',
     speaker_id: 6,
     attendees: [1, 2]
   },
   {
     id: 4,
-    date: 2,
+    day: 2,
     range: 1,
     site: 2,
-    title: 'Mongodb3',
+    title: 'Mongodb',
     speaker_id: 7,
     attendees: [1, 2]
   },
   {
     id: 5,
-    date: 3,
+    day: 3,
     range: 1,
     site: 1,
-    title: 'Mongodb4',
+    title: 'Mongodb',
     speaker_id: 8,
     attendees: [1, 2]
   },
   {
     id: 6,
-    date: 1,
+    day: 1,
     range: 2,
     site: 2,
-    title: 'Mongodb5',
+    title: 'Mongodb',
     speaker_id: 9,
     attendees: [1, 2]
   },
   {
     id: 9,
-    date: 3,
+    day: 3,
     range: 2,
     site: 1,
-    title: 'Mongodb8',
+    title: 'Mongodb',
     speaker_id: 12,
     attendees: [1, 2]
   }
