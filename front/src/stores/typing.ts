@@ -18,6 +18,7 @@ export type SpeakerType = {
   id: string
   name: string
   members_id: string
+  ids: { id: string }[]
 }
 
 export type AttendeeType = {

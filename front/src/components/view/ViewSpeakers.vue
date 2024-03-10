@@ -50,11 +50,19 @@ const notSpeaker = computed(() => {
       <thead class="bg-slate-100">
         <tr>
           <th>Speaker Name</th>
+          <th>Session Id</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="user in _s.speakers" :key="user.id">
           <td>{{ user.name }}</td>
+          <td>
+            <div class="flex items-center gap-2">
+              <div class="badge badge-ghost text-xs" v-for="el in user.ids" :key="el.id">
+                {{ el.id }}
+              </div>
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>

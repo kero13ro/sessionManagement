@@ -41,13 +41,17 @@ export const useSessions = defineStore('sessions', () => {
   }
 
   const fetchSpeakers = async () => {
-    const res = await pb
-      .collection('speakers')
-      .getFullList({ expand: 'members_id', fields: 'id,members_id,expand.members_id.name' })
+    const res = await pb.collection('speakers').getFullList({
+      expand: 'members_id, sessions_via_speaker_id',
+      fields: 'id,members_id,expand.members_id.name,expand.sessions_via_speaker_id.id'
+    })
+
+    console.log(res)
     speakers.value = res.map(({ id, members_id, expand }) => ({
       id,
       members_id,
-      name: expand!.members_id.name
+      name: expand!.members_id.name,
+      ids: expand!.sessions_via_speaker_id
     }))
   }
 
