@@ -1,15 +1,7 @@
 <script setup lang="ts">
 import { useSessions } from '@/stores/useSessions'
-import { useSetting } from '@/stores/useSetting'
 import { ref } from 'vue'
-const _s = useSetting()
 const _useSessions = useSessions()
-
-// const handleJoin = () => {
-//   _s.renderView = 'sessions'
-//   _s.mode = 'join'
-// }
-
 const newName = ref('')
 const addMember = () => {
   if (newName.value === '') return
@@ -19,8 +11,8 @@ const addMember = () => {
 </script>
 <template>
   <div class="overflow-x-auto">
-    <table class="table table-zebra max-w-[300px] text-center">
-      <thead>
+    <table class="table max-w-[300px] bg-white text-center">
+      <thead class="bg-slate-100">
         <tr>
           <!-- <th>Id</th> -->
           <th>Name</th>
@@ -32,12 +24,15 @@ const addMember = () => {
           v-for="user in _useSessions.members"
           :key="user.id"
           @click="_useSessions.handleJoin(user)"
+          class="hover cursor-pointer"
         >
           <!-- <th>{{ user.id }}</th> -->
           <td>{{ user.name }}</td>
           <td>
             <div v-if="user.joined" class="flex gap-2">
-              <span v-for="el in user.joined" :key="el.id">{{ el.identifier }}</span>
+              <div class="badge badge-ghost text-xs" v-for="el in user.joined" :key="el.id">
+                {{ el.identifier }}
+              </div>
             </div>
           </td>
         </tr>

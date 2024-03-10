@@ -2,13 +2,17 @@
 import { computed, ref } from 'vue'
 import { titles } from '@/assets/mock'
 import { rangeMapping, siteMapping } from '@/common'
-import { useSetting } from '@/stores/useSetting'
-import { useSessions, type SessionType } from '@/stores/useSessions'
+import { useSessions } from '@/stores/useSessions'
 import { storeToRefs } from 'pinia'
-const _s = useSetting()
+import type { SessionType } from '@/stores/typing'
 const _useSessions = useSessions()
 const addAttendee = _useSessions.addAttendee
-const { sessions, speakers, joinedArr } = storeToRefs(_useSessions)
+const { sessions, speakers, curtUser, isCreatedMode, loading } = storeToRefs(_useSessions)
+const curtUserJoinedArr = computed(() => {
+  if (!curtUser.value) return []
+  if (!curtUser.value.joined) return []
+  return curtUser.value.joined.map((el) => el.session_id)
+})
 
 // 天數、場地 數量，依據業務邏輯調整
 const DAY_MAX = 3
@@ -18,12 +22,11 @@ const defaultItem = {
   id: '0',
   title: '',
   speaker_id: '0',
-  attendees: ['0']
+  attendees: []
 }
-
 const renderList = computed(() => {
-  if (sessions.value.length === 0) return { 1: [], 2: [] }
   const res: Record<number, SessionType[]> = { 1: [], 2: [] }
+  const speaker_id = speakers.value[0] ? speakers.value[0].id : '0'
 
   for (let day = 1; day <= DAY_MAX; day++) {
     for (let range = 1; range <= 2; range++) {
@@ -31,7 +34,7 @@ const renderList = computed(() => {
         const ta = sessions.value.find(
           (el) => el.day === day && el.range === range && el.site === site
         )
-        res[range].push(ta || { ...defaultItem, day, range, site })
+        res[range].push(ta || { ...defaultItem, day, range, site, speaker_id })
       }
     }
   }
@@ -64,7 +67,7 @@ const handleCreate = () => {
           <div class="row"><span class="w-20">Day</span> {{ openModalData.day }}</div>
           <div class="row">
             <span class="w-20">Title</span>
-            <select class="select select-bordered select-sm" v-model="openModalData.title">
+            <select class="select select-bordered select-sm w-24" v-model="openModalData.title">
               <option v-for="title in titles" :key="title">{{ title }}</option>
             </select>
           </div>
@@ -75,7 +78,10 @@ const handleCreate = () => {
           </div>
           <div class="row items-center">
             <span class="w-20">Speaker</span>
-            <select class="select select-bordered select-sm" v-model="openModalData.speaker_id">
+            <select
+              class="select select-bordered select-sm w-24"
+              v-model="openModalData.speaker_id"
+            >
               <option v-for="user in speakers" :key="user.id" :value="user.id">
                 {{ user.name }}
               </option>
@@ -95,40 +101,31 @@ const handleCreate = () => {
       </form>
     </dialog>
 
-    <table class="table w-[auto] text-center">
-      <thead>
+    <table class="table w-[auto] bg-white text-center">
+      <thead class="bg-slate-100">
         <tr>
           <th></th>
           <th :colspan="SITE_MAX" v-for="day in DAY_MAX" :key="day">Day {{ day }}</th>
         </tr>
-        <!-- <tr class="subtitle border-b-slate-400">
-          <th>range \ site</th>
-          <th>site A</th>
-          <th>site B</th>
-          <th>site A</th>
-          <th>site B</th>
-          <th>site A</th>
-          <th>site B</th>
-        </tr> -->
       </thead>
       <tbody>
         <tr v-for="(rangeList, index) in renderList" :key="index">
-          <th class="w-[100px] bg-slate-100 text-xs">{{ rangeMapping(index) }}</th>
-          <td v-for="item in rangeList" :key="item?.id" >
+          <th class="w-[90px] bg-slate-100 text-xs">{{ rangeMapping(index) }}</th>
+          <td v-for="item in rangeList" :key="item?.id" class="w-[90px]">
             <div v-if="item.id !== '0'" class="grid gap-1">
               <div>{{ item.title }}</div>
               <button
-                v-if="!_s.isCreatedMode"
+                v-if="!isCreatedMode"
                 class="btn btn-outline btn-info btn-xs"
                 @click="addAttendee(item)"
-                :disabled="joinedArr.includes(item.id)"
+                :disabled="curtUserJoinedArr.includes(item.id)"
               >
                 JOIN
               </button>
             </div>
             <div v-else>
               <button
-                v-if="_s.isCreatedMode"
+                v-if="isCreatedMode"
                 class="btn btn-outline btn-info btn-xs"
                 @click="openModal(item)"
               >

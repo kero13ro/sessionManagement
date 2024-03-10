@@ -1,53 +1,32 @@
 import { ref, computed, onMounted } from 'vue'
 import { defineStore } from 'pinia'
 import PocketBase from 'pocketbase'
-import { useSetting } from './useSetting'
+import type { AttendeeType, MemberType, SessionType, SpeakerType } from './typing'
 
 const url = 'https://sessions-mana.pockethost.io/'
 const pb = new PocketBase(url)
 
-export type SessionType = {
-  id: string
-  day: number
-  range: number
-  site: number
-  title: string
-  speaker_id: string
-  attendees: string[]
-}
-
-type MemberType = {
-  id: string
-  name: string
-  joined: { id: string; identifier: string; session_id: string }[]
-}
-
-type SpeakerType = {
-  id: string
-  name: string
-  members_id: string
-}
-
-type AttendeeType = {
-  id: string
-  members_id: string
-  session_id: string
-  identifier: number
-}
-
 export const useSessions = defineStore('sessions', () => {
+  const renderView = ref<'sessions' | 'attendee' | 'speaker'>('sessions')
+  const tableMode = ref<'create' | 'join'>('create')
+  const isCreatedMode = computed(() => tableMode.value === 'create')
+
+  const loading = ref(true)
   const sessions = ref<SessionType[]>([])
   const members = ref<MemberType[]>([])
   const speakers = ref<SpeakerType[]>([])
   const attendeesArr = ref<AttendeeType[]>([])
-  const _s = useSetting()
 
   const fetchSessions = async () => {
     sessions.value = await pb.collection('sessions').getFullList()
+    loading.value = false
   }
+
   const addSession = async (params: any) => {
+    loading.value = true
     const record = await pb.collection('sessions').create(params)
     sessions.value.push(record as any)
+    loading.value = false
   }
 
   const fetchMembers = async () => {
@@ -58,6 +37,7 @@ export const useSessions = defineStore('sessions', () => {
       joined: expand.attendees_via_members_id
     }))
   }
+
   const fetchSpeakers = async () => {
     const res = await pb
       .collection('speakers')
@@ -77,18 +57,23 @@ export const useSessions = defineStore('sessions', () => {
   }
 
   const addMember = async (name: string) => {
+    loading.value = true
     const record = await pb.collection('members').create({ name })
     members.value.push(record as any)
+    loading.value = false
   }
 
   const addSpeaker = async (id: string) => {
+    loading.value = true
     await pb.collection('speakers').create({ members_id: id })
     fetchSpeakers()
+    loading.value = false
   }
 
   const pad = (n: number, digit: number = 2) => String(n).padStart(digit, '0')
 
   const addAttendee = async (sessions: SessionType) => {
+    loading.value = true
     const { day, range, site, id: session_id } = sessions
     const arr = attendeesArr.value
       .filter((el) => el.session_id === session_id)
@@ -101,22 +86,21 @@ export const useSessions = defineStore('sessions', () => {
       session_id,
       identifier
     }
-
     const res = await pb.collection('attendees').create(params)
     attendeesArr.value.push(res as any)
-    curtUser.value?.joined.push(res as any)
+    if (!curtUser.value?.joined) {
+      curtUser.value!.joined = [res as any]
+    } else {
+      curtUser.value?.joined.push(res as any)
+    }
+    loading.value = false
   }
 
   const curtUser = ref<MemberType | null>(null)
-  const joinedArr = computed(() => {
-    if (!curtUser.value) return []
-    if (!curtUser.value.joined) return []
-    return curtUser.value.joined.map((el) => el.session_id)
-  })
 
   const handleJoin = (user: MemberType) => {
-    _s.renderView = 'sessions'
-    _s.mode = 'join'
+    renderView.value = 'sessions'
+    tableMode.value = 'join'
     curtUser.value = user
   }
 
@@ -136,10 +120,14 @@ export const useSessions = defineStore('sessions', () => {
     fetchSpeakers,
     handleJoin,
     addAttendee,
+    renderView,
+    tableMode,
+    isCreatedMode,
+    loading,
+
     sessions,
     members,
     speakers,
-    curtUser,
-    joinedArr
+    curtUser
   }
 })

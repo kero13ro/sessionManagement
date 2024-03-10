@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import { members } from '@/assets/mock'
 import { useSessions } from '@/stores/useSessions'
-import { useSetting } from '@/stores/useSetting'
 import { computed, ref } from 'vue'
-const _s = useSetting()
-const _useSessions = useSessions()
+const _s = useSessions()
 
 const addSpeakerModal = ref()
 const addSpeaker = () => {
@@ -12,14 +9,13 @@ const addSpeaker = () => {
 }
 
 const handleAdd = (id: string) => {
-  console.log(id)
-  _useSessions.addSpeaker(id)
+  _s.addSpeaker(id)
   addSpeakerModal.value.close()
 }
 
 const notSpeaker = computed(() => {
-  const ids = _useSessions.speakers.map((sp) => sp.members_id)
-  return _useSessions.members.filter((el) => !ids.includes(el.id))
+  const ids = _s.speakers.map((sp) => sp.members_id)
+  return _s.members.filter((el) => !ids.includes(el.id))
 })
 </script>
 <template>
@@ -28,8 +24,8 @@ const notSpeaker = computed(() => {
       <div class="modal-box">
         <h3 class="mb-8 text-lg font-bold">Add Speaker</h3>
         <div class="mb-12 flex justify-center">
-          <table class="table table-zebra w-[200px] text-center">
-            <thead>
+          <table class="table w-[200px] bg-white text-center">
+            <thead class="bg-slate-100">
               <tr>
                 <th>Name</th>
               </tr>
@@ -50,14 +46,14 @@ const notSpeaker = computed(() => {
       </form>
     </dialog>
 
-    <table class="table table-zebra max-w-[200px] text-center">
-      <thead>
+    <table class="table max-w-[200px] bg-white text-center">
+      <thead class="bg-slate-100">
         <tr>
           <th>Speaker Name</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="user in _useSessions.speakers" :key="user.id">
+        <tr v-for="user in _s.speakers" :key="user.id">
           <td>{{ user.name }}</td>
         </tr>
       </tbody>
