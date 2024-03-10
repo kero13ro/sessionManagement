@@ -19,7 +19,7 @@ const gotoSession = () => {
       <button class="text-md btn btn-block" @click="_s.renderView = 'attendee'">Attendees</button>
       <button class="text-md btn btn-block" @click="_s.renderView = 'speaker'">Speakers</button>
     </nav>
-    <div class="px-6 py-12">
+    <div class="overflow-x-auto">
       <ViewSessions v-show="_s.renderView === 'sessions'" />
       <ViewAttendee v-show="_s.renderView === 'attendee'" />
       <ViewSpeakers v-show="_s.renderView === 'speaker'" />
@@ -34,15 +34,16 @@ const gotoSession = () => {
 .root {
   display: grid;
   grid-template-columns: 220px 1fr;
-  height: 100vh;
+  min-height: 100vh;
+  width: 100vw;
 }
 
 .mask {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  min-width: 100vw;
+  min-height: 100vh;
   display: flex;
   /* background-color: rgba(200, 200, 200, 0.2); */
   color: #888;

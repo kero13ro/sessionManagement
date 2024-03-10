@@ -19,7 +19,7 @@ const notSpeaker = computed(() => {
 })
 </script>
 <template>
-  <div class="overflow-x-auto">
+  <div class="px-6 py-12">
     <dialog id="addSpeakerModal" class="modal" ref="addSpeakerModal">
       <div class="modal-box">
         <h3 class="mb-8 text-lg font-bold">Add Speaker</h3>

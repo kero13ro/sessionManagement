@@ -10,7 +10,7 @@ const addMember = () => {
 }
 </script>
 <template>
-  <div class="overflow-x-auto">
+  <div class="px-6 py-12">
     <table class="table max-w-[300px] bg-white text-center">
       <thead class="bg-slate-100">
         <tr>

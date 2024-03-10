@@ -18,7 +18,9 @@ export const useSessions = defineStore('sessions', () => {
   const attendeesArr = ref<AttendeeType[]>([])
 
   const fetchSessions = async () => {
-    sessions.value = await pb.collection('sessions').getFullList()
+    sessions.value = await pb
+      .collection('sessions')
+      .getFullList({ fields: 'id,day,slot,site,title,speaker_id' })
     loading.value = false
   }
 
